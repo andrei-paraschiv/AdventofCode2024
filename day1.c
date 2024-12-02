@@ -5,6 +5,7 @@
 int compare_function(const void *a, const void *b);
 
 int main (int argc, char *argv[]) {
+    // Parse Input
     if (argc != 2) {
         printf("Usage: %s <filename>\n", argv[0]);
         return 1;
@@ -12,7 +13,7 @@ int main (int argc, char *argv[]) {
 
     FILE* fptr;
     fptr = fopen(argv[1], "r");
-    
+
     if (fptr == NULL) {
         printf("File not found\n");
         return 1;
@@ -41,10 +42,10 @@ int main (int argc, char *argv[]) {
             num = num * 10 + c - '0';
         }
     }
-
+    size = size / 2;
     fclose(fptr);
 
-    size = size / 2;
+    // Part 1 - O(nlog(n))   
     qsort(nums1, size, sizeof(int), compare_function);
     qsort(nums2, size, sizeof(int), compare_function);
 
@@ -55,24 +56,45 @@ int main (int argc, char *argv[]) {
 
     printf("Total difference: %d\n", totalDiff);
 
-    int similarityScore = 0, prevScore;
-    for (int i = 0; i < size; i++) {
-        if (i == 0 || nums1[i] != nums1[i - 1]) {
-            prevScore = 0;
-            for (int j = 0; j < size; j++) {
-                if (nums2[j] == nums1[i]) {
-                    prevScore++;
-                }
-            }
-            prevScore *= nums1[i];
-        }
-        similarityScore += prevScore;
+    // Part 2 - O(n)
+    int smallest = nums1[0], largest = nums1[0];
+    for (int i = 1; i < size; i++) {
+        if (nums1[i] < smallest) smallest = nums1[i];
+        if (nums1[i] > largest) largest = nums1[i];
     }
+
+    uint32_t* occurences = malloc((largest - smallest + 1) * sizeof(uint32_t));
+    for (int i = 0; i < size; i++) {
+        if (nums2[i] >= smallest && nums2[i] <= largest) {
+            occurences[nums2[i] - smallest]++;
+        }
+    }
+
+    int similarityScore = 0;
+    for (int i = 0; i < size; i++) {
+        similarityScore += occurences[nums1[i] - smallest] * nums1[i];
+    }
+
+    // Naive Implementation - O(n^2)
+    // int similarityScore = 0, score;
+    // for (int i = 0; i < size; i++) {
+    //     if (i == 0 || nums1[i] != nums1[i - 1]) {
+    //         score = 0;
+    //         for (int j = 0; j < size; j++) {
+    //             if (nums2[j] == nums1[i]) {
+    //                 prevScore++;
+    //             }
+    //         }
+    //         prevScore *= nums1[i];
+    //     }
+    //     similarityScore += prevScore;
+    // }
 
     printf("Similarity score: %d\n", similarityScore);
 
     free(nums1);
     free(nums2);
+    free(occurences);
 
     return 0;
 }
