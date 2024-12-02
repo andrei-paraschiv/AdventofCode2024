@@ -1,1 +1,3 @@
 *.txt
+.vscode
+day01.rs

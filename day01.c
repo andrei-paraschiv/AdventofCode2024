@@ -75,21 +75,6 @@ int main (int argc, char *argv[]) {
         similarityScore += occurences[nums1[i] - smallest] * nums1[i];
     }
 
-    // Naive Implementation - O(n^2)
-    // int similarityScore = 0, score;
-    // for (int i = 0; i < size; i++) {
-    //     if (i == 0 || nums1[i] != nums1[i - 1]) {
-    //         score = 0;
-    //         for (int j = 0; j < size; j++) {
-    //             if (nums2[j] == nums1[i]) {
-    //                 prevScore++;
-    //             }
-    //         }
-    //         prevScore *= nums1[i];
-    //     }
-    //     similarityScore += prevScore;
-    // }
-
     printf("Similarity score: %d\n", similarityScore);
 
     free(nums1);
