@@ -11,9 +11,7 @@ int main (int argc, char *argv[]) {
         return 1;
     }
 
-    FILE* fptr;
-    fptr = fopen(argv[1], "r");
-
+    FILE* fptr = fopen(argv[1], "r");
     if (fptr == NULL) {
         printf("File not found\n");
         return 1;

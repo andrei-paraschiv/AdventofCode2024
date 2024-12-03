@@ -17,9 +17,7 @@ int main (int argc, char *argv[]) {
         return 1;
     }
 
-    FILE* fptr;
-    fptr = fopen(argv[1], "r");
-
+    FILE* fptr = fopen(argv[1], "r");
     if (fptr == NULL) {
         printf("File not found\n");
         return 1;
@@ -73,8 +71,7 @@ int main (int argc, char *argv[]) {
 
     //Part 2 - O(n)
     safe = size;
-    int unsafeIndex;
-    int* removedIndex = 0;
+    int* removedIndex = 0, unsafeIndex;
     for (int i = 0; i < size; i++) {
         if (unsafeIndex = getUnsafeIndex(reports[i].levels, reports[i].size)) {
             if (removedIndex) free(removedIndex);
