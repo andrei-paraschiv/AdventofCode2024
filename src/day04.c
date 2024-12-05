@@ -33,12 +33,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(n)
-    uint8_t** wordSearch2D = malloc(rowSize * sizeof(uint8_t*));
-    for (int i = 0; i < rowSize; i++) {
-        wordSearch2D[i] = &(wordSearch[i * colSize]);
-    }
-
     int occurrences = 0;
+    uint8_t (*wordSearch2D)[colSize] = (uint8_t (*)[colSize]) wordSearch;
     for (int i = 0; i < rowSize; i++) {
         for (int j = 0; j < colSize; j++) {
             if (wordSearch2D[i][j] == 'X') {
@@ -78,7 +74,7 @@ int main (int argc, char *argv[]) {
         }
     }
 
-    printf("Part 1 Occurrences: %d\n", occurrences);
+    printf("Part 1 Solution: %d\n", occurrences);
 
     // Part 2 - O(n)
     occurrences = 0;
@@ -113,10 +109,9 @@ int main (int argc, char *argv[]) {
         }
     }
     
-    printf("Part 2 Occurrences: %d\n", occurrences);
+    printf("Part 2 Solution: %d\n", occurrences);
 
     free(wordSearch);
-    free(wordSearch2D);
 
     return 0;
 }

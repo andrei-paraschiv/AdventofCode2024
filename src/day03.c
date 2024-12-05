@@ -55,7 +55,7 @@ int main (int argc, char *argv[]) {
         }
     }
 
-    printf("Part 1 Sum of mul instructions: %d\n", sum);
+    printf("Part 1 Solution: %d\n", sum);
 
     // Part 2 - O(n)
     mulIndex = 0, val1 = 0, val2 = 0, sum = 0;
@@ -92,7 +92,7 @@ int main (int argc, char *argv[]) {
         }
     }
 
-    printf("Part 2 Sum of mul instructions: %d\n", sum);
+    printf("Part 2 Solution: %d\n", sum);
 
     return 0;
 }

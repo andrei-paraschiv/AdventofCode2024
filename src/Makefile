@@ -1,8 +1,4 @@
-all: c_all rs_all
-
-c_all: day01 day02 day03 day04
-
-rs_all: day01_rs
+all: day01 day02 day03 day04 day05
 
 day01: day01.c
 	gcc day01.c -o day01
@@ -16,8 +12,8 @@ day03: day03.c
 day04: day04.c
 	gcc day04.c -o day04
 
-day01_rs: day01.rs
-	rustc day01.rs -o da0y1_rs
+day05: day05.c
+	gcc day05.c -o day05
 
 clean:
-	rm -f day01 day02 day03 day04
+	rm -f day01 day02 day03 day04 day05

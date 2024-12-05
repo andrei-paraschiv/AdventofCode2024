@@ -52,7 +52,7 @@ int main (int argc, char *argv[]) {
         totalDiff += abs(nums1[i] - nums2[i]);
     }
 
-    printf("Part 1 Total difference: %d\n", totalDiff);
+    printf("Part 1 Solution: %d\n", totalDiff);
 
     // Part 2 - O(n)
     int smallest = nums1[0], largest = nums1[0];
@@ -73,7 +73,7 @@ int main (int argc, char *argv[]) {
         similarityScore += occurences[nums1[i] - smallest] * nums1[i];
     }
 
-    printf("Part 2 Similarity score: %d\n", similarityScore);
+    printf("Part 2 Solution: %d\n", similarityScore);
 
     free(nums1);
     free(nums2);

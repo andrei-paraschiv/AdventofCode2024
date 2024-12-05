@@ -67,7 +67,7 @@ int main (int argc, char *argv[]) {
         if (getUnsafeIndex(reports[i].levels, reports[i].size)) safe--;
     }
 
-    printf("Part 1 Safe reports: %d\n", safe);
+    printf("Part 1 Solution: %d\n", safe);
 
     //Part 2 - O(n)
     safe = size;
@@ -86,7 +86,7 @@ int main (int argc, char *argv[]) {
         }
     }
     
-    printf("Part 2 Safe reports: %d\n", safe);
+    printf("Part 2 Solution: %d\n", safe);
 
     if (removedIndex) free(removedIndex);
     for (int i = 0; i < size + 1; i++) free(reports[i].levels);
