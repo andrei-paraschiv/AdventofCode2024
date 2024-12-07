@@ -43,7 +43,7 @@ int main (int argc, char *argv[]) {
     size = size / 2;
     fclose(fptr);
 
-    // Part 1 - O(nlog(n))   
+    // Part 1 - O(n*log(n))   
     qsort(nums1, size, sizeof(int), compare_function);
     qsort(nums2, size, sizeof(int), compare_function);
 

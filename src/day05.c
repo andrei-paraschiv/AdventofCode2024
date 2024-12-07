@@ -117,7 +117,7 @@ int main (int argc, char *argv[]) {
 
     printf("Part 1 Solution: %d\n", sum);
 
-    // Part 2 - O(r + u * log(u)) where r is the number of rules and u is the total size of all updates
+    // Part 2 - O(r + u*log(u)) where r is the number of rules and u is the total size of all updates
     sum = 0;
     extraCompareArguments.min = min;
     extraCompareArguments.max = max;
