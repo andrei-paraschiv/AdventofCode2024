@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct Report {
     int* levels;
@@ -62,20 +63,30 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(n)
+    clock_t startTime = clock();
+
     int safe = size;
     for (int i = 0; i < size; i++) {
         if (getUnsafeIndex(reports[i].levels, reports[i].size)) safe--;
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", safe);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     //Part 2 - O(n)
+    startTime = clock();
+
     safe = size;
     int* removedIndex = 0, unsafeIndex;
     for (int i = 0; i < size; i++) {
+        if (removedIndex) {
+            free(removedIndex);
+            removedIndex = 0;
+        }
         if (unsafeIndex = getUnsafeIndex(reports[i].levels, reports[i].size)) {
-            if (removedIndex) free(removedIndex);
-            int* removedIndex = malloc((reports[i].size - 1) * sizeof(int));
+            removedIndex = malloc((reports[i].size - 1) * sizeof(int));
             removeIndex(reports[i].levels, reports[i].size, unsafeIndex, removedIndex);
             if (!getUnsafeIndex(removedIndex, reports[i].size - 1)) continue;
             removeIndex(reports[i].levels, reports[i].size, unsafeIndex - 1, removedIndex);
@@ -86,10 +97,13 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", safe);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     if (removedIndex) free(removedIndex);
-    for (int i = 0; i < size + 1; i++) free(reports[i].levels);
+    for (int i = 0; i < size; i++) free(reports[i].levels);
     free(reports);
 
     return 0;

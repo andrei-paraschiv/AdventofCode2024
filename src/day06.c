@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 uint8_t checkLoop(int colSize, int rowSize, uint8_t (*map2D)[colSize], int row, int col);
 
@@ -46,6 +47,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);    
 
     // Part 1 - O(n)
+    clock_t startTime = clock();
+
     int distinctPositions = 0, row = initRow, col = initCol, directionsIndex = 0;
     uint8_t (*map2D)[colSize] = (uint8_t (*)[colSize]) map;
     while (1) {
@@ -66,9 +69,14 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", distinctPositions);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(n^2)
+    startTime = clock();
+
     int obstructions = 0;
     row = initRow, col = initCol, directionsIndex = 0;
     while (1) {
@@ -88,7 +96,10 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", obstructions);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     free(map);
 

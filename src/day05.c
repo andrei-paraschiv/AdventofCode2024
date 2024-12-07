@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 struct Update {
     int* pages;
@@ -94,6 +95,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(r + u) where r is the number of rules and u is the total size of all updates
+    clock_t startTime = clock();
+
     int rules2D[max - min + 1][max - min + 1];
     memset(rules2D, 0, sizeof(rules2D));
     for (int i = 0; i < rulesSize / 2; i++) {
@@ -115,9 +118,14 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", sum);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(r + u*log(u)) where r is the number of rules and u is the total size of all updates
+    startTime = clock();
+
     sum = 0;
     extraCompareArguments.min = min;
     extraCompareArguments.max = max;
@@ -132,7 +140,10 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", sum);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     free(rules);
     for (int i = 0; i < updatesSize; i++) {

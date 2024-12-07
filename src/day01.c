@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int compare_function(const void *a, const void *b);
 
@@ -44,6 +45,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(n*log(n))   
+    clock_t startTime = clock();
+
     qsort(nums1, size, sizeof(int), compare_function);
     qsort(nums2, size, sizeof(int), compare_function);
 
@@ -52,9 +55,14 @@ int main (int argc, char *argv[]) {
         totalDiff += abs(nums1[i] - nums2[i]);
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", totalDiff);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(n)
+    startTime = clock();
+
     int smallest = nums1[0], largest = nums1[0];
     for (int i = 1; i < size; i++) {
         if (nums1[i] < smallest) smallest = nums1[i];
@@ -73,7 +81,10 @@ int main (int argc, char *argv[]) {
         similarityScore += occurences[nums1[i] - smallest] * nums1[i];
     }
 
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", similarityScore);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     free(nums1);
     free(nums2);

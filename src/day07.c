@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct Equation {
     int64_t* nums;
@@ -59,6 +60,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);    
     
     // Part 1 - O(2^n)
+    clock_t startTime = clock();
+
     uint8_t validEquation;
     int64_t totalResult = 0;
     for (int i = 0; i < size; i++) {
@@ -71,9 +74,14 @@ int main (int argc, char *argv[]) {
         }     
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %ld\n", totalResult);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(3^n)
+    startTime = clock();
+
     totalResult = 0;
     for (int i = 0; i < size; i++) {
         validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 0, 1);
@@ -88,7 +96,10 @@ int main (int argc, char *argv[]) {
         }     
     }
 
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %ld\n", totalResult);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     for (int i = 0; i < size; i++) {
         free(equations[i].nums);

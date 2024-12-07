@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main (int argc, char *argv[]) {
     // Parse Input
@@ -28,6 +29,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(n)
+    clock_t startTime = clock();
+
     int mulIndex = 0, val1 = 0, val2 = 0, sum = 0;
     for (int i = 0; i < size; i++) {
         if (memory[i] == 'm' && memory[i + 1] == 'u' && memory[i + 2] == 'l' && memory[i + 3] == '(') {
@@ -55,9 +58,14 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", sum);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(n)
+    startTime = clock();
+
     mulIndex = 0, val1 = 0, val2 = 0, sum = 0;
     int enabled = 1;
     for (int i = 0; i < size; i++) {
@@ -92,7 +100,12 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", sum);
+    printf("Part 2 Time: %ld us\n", usTime);
+
+    free(memory);
 
     return 0;
 }

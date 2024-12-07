@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int main (int argc, char *argv[]) {
     // Parse Input
@@ -33,6 +34,8 @@ int main (int argc, char *argv[]) {
     fclose(fptr);
 
     // Part 1 - O(n)
+    clock_t startTime = clock();
+
     int occurrences = 0;
     uint8_t (*wordSearch2D)[colSize] = (uint8_t (*)[colSize]) wordSearch;
     for (int i = 0; i < rowSize; i++) {
@@ -74,9 +77,14 @@ int main (int argc, char *argv[]) {
         }
     }
 
+    int64_t usTime = clock() - startTime;
+
     printf("Part 1 Solution: %d\n", occurrences);
+    printf("Part 1 Time: %ld us\n", usTime);
 
     // Part 2 - O(n)
+    startTime = clock();
+
     occurrences = 0;
     for (int i = 1; i < rowSize - 1; i++) {
         for (int j = 1; j < colSize - 1; j++) {
@@ -109,7 +117,10 @@ int main (int argc, char *argv[]) {
         }
     }
     
+    usTime = clock() - startTime;
+
     printf("Part 2 Solution: %d\n", occurrences);
+    printf("Part 2 Time: %ld us\n", usTime);
 
     free(wordSearch);
 
