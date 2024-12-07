@@ -1,14 +1,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 struct Equation {
     int64_t* nums;
     uint32_t size;
 };
 
-int64_t concatenate(int64_t a, int64_t b);
+uint8_t reverseSearch(int64_t* equation, int index, int64_t accumulatedVal, int operation, uint8_t enableConcat);
+int64_t unconcatenate(int64_t a, int64_t b);
 
 int main (int argc, char *argv[]) {
     // Parse Input
@@ -58,60 +58,34 @@ int main (int argc, char *argv[]) {
     }
     fclose(fptr);    
     
-    // Part 1 - O(n * 2^n)
-    int64_t totalResult = 0, equationValue, totalArrangements;
+    // Part 1 - O(2^n)
+    uint8_t validEquation;
+    int64_t totalResult = 0;
     for (int i = 0; i < size; i++) {
-        totalArrangements = 1 << (equations[i].size - 2);
-        for (int j = 0; j < totalArrangements; j++) {
-            equationValue = equations[i].nums[1];
-            for (int k = 0; k < equations[i].size - 2; k++) {
-                if (j >> k & 1) {
-                    equationValue += equations[i].nums[k + 2];
-                } else {
-                    equationValue *= equations[i].nums[k + 2];
-                }
-            }
-            if (equationValue == equations[i].nums[0]) {
-                totalResult += equationValue;
-                break;
-            }
+        validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 0, 0);
+        if (validEquation == 0) {
+            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 0);
         }
+        if (validEquation) {
+            totalResult += equations[i].nums[0];   
+        }     
     }
 
     printf("Part 1 Solution: %ld\n", totalResult);
 
-    // Part 2 - O(n * 3^n)
-    int64_t pow3[maxEquationSize - 1];
-    for (int i = 0; i < maxEquationSize - 1; i++) {
-        pow3[i] = 1;
-        for (int j = 0; j < i; j++) {
-            pow3[i] *= 3;
-        }
-    }
-
+    // Part 2 - O(3^n)
     totalResult = 0;
-    int64_t operationSelect;
     for (int i = 0; i < size; i++) {
-        totalArrangements = pow3[equations[i].size - 2];
-        for (int j = 0; j < totalArrangements; j++) {
-            equationValue = equations[i].nums[1];
-            operationSelect = j;
-            for (int k = 0; k < equations[i].size - 2; k++) {
-                if (operationSelect % 3 == 0) {
-                    equationValue += equations[i].nums[k + 2];
-                } else if (operationSelect % 3 == 1) {
-                    equationValue *= equations[i].nums[k + 2];
-                } else {
-                    equationValue = concatenate(equationValue, equations[i].nums[k + 2]);
-                    if (equationValue == 0) break;
-                }
-                operationSelect /= 3;
-            }
-            if (equationValue == equations[i].nums[0]) {
-                totalResult += equationValue;
-                break;
-            }
+        validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 0, 1);
+        if (validEquation == 0) {
+            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 1);
         }
+        if (validEquation == 0) {
+            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 2, 1);
+        }
+        if (validEquation) {
+            totalResult += equations[i].nums[0];   
+        }     
     }
 
     printf("Part 2 Solution: %ld\n", totalResult);
@@ -124,6 +98,38 @@ int main (int argc, char *argv[]) {
     return 0;
 }
 
+uint8_t reverseSearch(int64_t* equation, int index, int64_t accumulatedVal, int operation, uint8_t enableConcat) {
+    if (index == 0) {
+        if (accumulatedVal) return 0;
+        return 1;
+    }
+
+    if (operation == 0) {
+        accumulatedVal -= equation[index];
+        if (accumulatedVal < 0) return 0;
+    } else if (operation == 1) {
+        if (equation[index] == 0) {
+            if (accumulatedVal) return 0;
+            return 1;
+        }
+        if (accumulatedVal % equation[index]) return 0;
+        accumulatedVal /= equation[index];
+    } else {
+        accumulatedVal = unconcatenate(accumulatedVal, equation[index]);
+        if (accumulatedVal == -1) return 0;
+    }
+    if (accumulatedVal == 0 && index == 2 && equation[1] != 0) return 0;
+
+    uint8_t validEquation = reverseSearch(equation, index - 1, accumulatedVal, 0, enableConcat);
+    if (validEquation == 0) {
+        validEquation = reverseSearch(equation, index - 1, accumulatedVal, 1, enableConcat);
+    }
+    if (validEquation == 0 && enableConcat) {
+        validEquation = reverseSearch(equation, index - 1, accumulatedVal, 2, enableConcat);
+    }
+    return validEquation;
+}
+
 const int64_t power10[19] = {
     1, 10, 100, 1000, 10000, 100000, 1000000, 10000000,
     100000000, 1000000000, 10000000000, 100000000000,
@@ -132,7 +138,7 @@ const int64_t power10[19] = {
     1000000000000000000
 };
 
-int64_t concatenate(int64_t a, int64_t b) {
+int64_t unconcatenate(int64_t a, int64_t b) {
     int numDigits = 0;
     if (b < 10000000000) { // 1 - 10
         if (b < 100000) { // 1 - 5
@@ -201,7 +207,7 @@ int64_t concatenate(int64_t a, int64_t b) {
             }
         }
     }
-    int64_t result = a * power10[numDigits] + b;
-    if (numDigits == 19 || result < 0) return 0;
+    int64_t result = a / power10[numDigits];
+    if (a - result * power10[numDigits] != b) return -1;
     return result;
 }
