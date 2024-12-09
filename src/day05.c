@@ -113,9 +113,7 @@ int main (int argc, char *argv[]) {
                 break;
             }
         }
-        if (valid) {
-            sum += updates[i].pages[updates[i].size / 2];
-        }
+        if (valid) sum += updates[i].pages[updates[i].size / 2];
     }
 
     int64_t usTime = clock() - startTime;
@@ -146,9 +144,7 @@ int main (int argc, char *argv[]) {
     printf("Part 2 Time: %ld us\n", usTime);
 
     free(rules);
-    for (int i = 0; i < updatesSize; i++) {
-        free(updates[i].pages);
-    }
+    for (int i = 0; i < updatesSize; i++) free(updates[i].pages);
     free(updates);
 
     return 0;
