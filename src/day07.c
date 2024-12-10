@@ -66,12 +66,8 @@ int main (int argc, char *argv[]) {
     int64_t totalResult = 0;
     for (int i = 0; i < size; i++) {
         validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 0, 0);
-        if (validEquation == 0) {
-            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 0);
-        }
-        if (validEquation) {
-            totalResult += equations[i].nums[0];   
-        }     
+        if (validEquation == 0) validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 0);
+        if (validEquation) totalResult += equations[i].nums[0];
     }
 
     int64_t usTime = clock() - startTime;
@@ -85,15 +81,9 @@ int main (int argc, char *argv[]) {
     totalResult = 0;
     for (int i = 0; i < size; i++) {
         validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 0, 1);
-        if (validEquation == 0) {
-            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 1);
-        }
-        if (validEquation == 0) {
-            validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 2, 1);
-        }
-        if (validEquation) {
-            totalResult += equations[i].nums[0];   
-        }     
+        if (validEquation == 0) validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 1, 1);
+        if (validEquation == 0) validEquation = reverseSearch(equations[i].nums, equations[i].size - 1, equations[i].nums[0], 2, 1);
+        if (validEquation) totalResult += equations[i].nums[0];   
     }
 
     usTime = clock() - startTime;
