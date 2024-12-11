@@ -14,7 +14,7 @@ int main (int argc, char *argv[]) {
 
     FILE* fptr = fopen(argv[1], "r");
     if (fptr == NULL) {
-        printf("File not found\n");
+        puts("File not found");
         return 1;
     }
 

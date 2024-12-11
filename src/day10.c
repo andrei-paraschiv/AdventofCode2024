@@ -16,7 +16,7 @@ int main (int argc, char *argv[]) {
 
     FILE* fptr = fopen(argv[1], "r");
     if (fptr == NULL) {
-        printf("File not found\n");
+        puts("File not found");
         return 1;
     }
 
@@ -71,7 +71,7 @@ int main (int argc, char *argv[]) {
     printf("Part 2 Solution: %u\n", rating);
     printf("Part 2 Time: %ld us\n", usTime);
 
-    free(topographicMap2D);
+    free(topographicMap);
 
     return 0;
 }
