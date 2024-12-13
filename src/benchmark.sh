@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 
-if [ $# -gt "1" ]; then
-    echo "Usage:"
-    echo -e "\t$0 to benchmark all days"
-    echo -e "\t$0 [day] to benchmark a specific day, day must be a number between 1 and 25 inclusive"
-    exit
+if [ $# -gt 0 ]; then
+    day=$(expr $1 + 0 2>/dev/null)
+    if [ $# -gt 1 ] || ([ $# -eq 1 ] && [ $day -gt "25" -o $day -eq "0" ] 2>/dev/null || ! expr $day : '[0-9]\{1,2\}$' &>/dev/null); then
+        echo "Usage:"
+        echo -e "\t$0 to benchmark all days"
+        echo -e "\t$0 [day] to benchmark a specific day, day must be a number between 1 and 25 inclusive"
+        exit
+    fi
 fi
 
 if [ $# -eq "1" ]; then
-    make "day$1"
+    dayPadded=$day
+    if [ $day -lt "10" ]; then
+        dayPadded="0$day"
+    fi
+    make "day$dayPadded" > /dev/null
 
-    echo -e "Benchmarking day $1, avg and best times of 100 repetitions in microseconds:\n"
+    echo -e "Benchmarking day $day, avg and best times of 100 repetitions in microseconds:\n"
     echo "Day;Part;Average;Best" > tmp2.txt
 
     part1best=0
@@ -19,7 +26,7 @@ if [ $# -eq "1" ]; then
     part2avg=0
     for j in $(seq 1 100);
     do
-        ./day$1 ../input/day$1.txt > ./tmp1.txt
+        ./day$dayPadded ../input/day$dayPadded.txt > ./tmp1.txt
         val=$(cat tmp1.txt | grep "1 Time" | awk '{print $4}')
         part1avg=$((val + part1avg))
         if [ $val -lt $part1best ] || [ $part1best -eq "0" ]; then
@@ -34,16 +41,16 @@ if [ $# -eq "1" ]; then
 
     part1avg=$((part1avg / 100))
     part2avg=$((part2avg / 100))
-    echo "$1;1;$part1avg us;$part1best us" >> tmp2.txt
-    echo "$1;2;$part2avg us;$part2best us" >> tmp2.txt
+    echo "$day;1;$part1avg us;$part1best us" >> tmp2.txt
+    echo "$day;2;$part2avg us;$part2best us" >> tmp2.txt
     column -t -s ";" tmp2.txt
 
     rm tmp1.txt tmp2.txt
-    # make clean
+    make clean > /dev/null
     exit
 fi
 
-make all
+make all > /dev/null
 echo -e "Benchmarking all days, avg and best times of 100 repetitions in microseconds:"
 echo -ne "Progress: Day 01"
 echo "Day;Part;Average;Best" > tmp2.txt
@@ -80,4 +87,4 @@ echo -e "\r\e[K"
 column -t -s ";" tmp2.txt
 
 rm tmp1.txt tmp2.txt
-# make clean
+make clean > /dev/null

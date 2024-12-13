@@ -1,8 +1,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
+
+#define HASHTABLE_SIZE1 307
+#define HASHTABLE_SIZE2 6343 // 3947 // 7919
+#define HASH_FUNCTION(x) ((x) % hashTable->size)
 
 struct HashBucket {
     uint64_t* keys;
@@ -11,11 +14,11 @@ struct HashBucket {
 };
 
 struct HashTable {
-    struct HashBucket buckets[1009];
     uint32_t size;
+    struct HashBucket* buckets;
 };
 
-void initHashTable(struct HashTable* hashTable);
+void initHashTable(struct HashTable* hashTable, uint32_t size);
 void insertHashTable(struct HashTable* hashTable, uint64_t key, uint64_t value);
 void updateHashTableValues(struct HashTable* hashTablePrev, struct HashTable* hashTable);
 uint64_t getTotalHashTableValues(struct HashTable* hashTable);
@@ -67,19 +70,19 @@ int main (int argc, char *argv[]) {
     // Part 1 - O(n^2) (O(n) average)
     clock_t startTime = clock();
 
-    struct HashTable hashTable[2];
-    initHashTable(&hashTable[0]);
-    initHashTable(&hashTable[1]);
+    struct HashTable hashTable1[2];
+    initHashTable(&hashTable1[0], HASHTABLE_SIZE1);
+    initHashTable(&hashTable1[1], HASHTABLE_SIZE1);
 
     for (int i = 0; i < size; i++) {
-        insertHashTable(&hashTable[0], stones[i], 1);
+        insertHashTable(&hashTable1[0], stones[i], 1);
     }
 
     for (int i = 0; i < 25; i++) {
-        updateHashTableValues(&hashTable[i % 2], &hashTable[(i + 1) % 2]);
+        updateHashTableValues(&hashTable1[i % 2], &hashTable1[(i + 1) % 2]);
     }
 
-    uint64_t numStones = getTotalHashTableValues(&hashTable[25 % 2]);    
+    uint64_t numStones = getTotalHashTableValues(&hashTable1[25 % 2]);    
 
     int64_t usTime = clock() - startTime;
 
@@ -89,11 +92,19 @@ int main (int argc, char *argv[]) {
     // Part 2 - O(n^2) (O(n) average)
     startTime = clock();
 
-    for (int i = 25; i < 75; i++) {
-        updateHashTableValues(&hashTable[i % 2], &hashTable[(i + 1) % 2]);
+    struct HashTable hashTable2[2];
+    initHashTable(&hashTable2[0], HASHTABLE_SIZE2);
+    initHashTable(&hashTable2[1], HASHTABLE_SIZE2);
+
+    for (int i = 0; i < size; i++) {
+        insertHashTable(&hashTable2[0], stones[i], 1);
     }
 
-    numStones = getTotalHashTableValues(&hashTable[75 % 2]);    
+    for (int i = 0; i < 75; i++) {
+        updateHashTableValues(&hashTable2[i % 2], &hashTable2[(i + 1) % 2]);
+    }
+
+    numStones = getTotalHashTableValues(&hashTable2[75 % 2]);    
 
     usTime = clock() - startTime;
 
@@ -101,8 +112,10 @@ int main (int argc, char *argv[]) {
     printf("Part 2 Time: %ld us\n", usTime);
 
     free(stones);
-    freeHashTable(&hashTable[0]);
-    freeHashTable(&hashTable[1]);
+    freeHashTable(&hashTable1[0]);
+    freeHashTable(&hashTable1[1]);
+    freeHashTable(&hashTable2[0]);
+    freeHashTable(&hashTable2[1]);
 
     return 0;
 }
@@ -179,9 +192,10 @@ uint8_t numDigits(int64_t a) {
     return numDigits;
 }
 
-void initHashTable(struct HashTable* hashTable) {
-    hashTable->size = 1009;
-    for (int i = 0; i < 1009; i++) {
+void initHashTable(struct HashTable* hashTable, uint32_t size) {
+    hashTable->size = size;
+    hashTable->buckets = malloc(size * sizeof(struct HashBucket));
+    for (int i = 0; i < hashTable->size; i++) {
         hashTable->buckets[i].size = 0;
         hashTable->buckets[i].initSize = 10;
         hashTable->buckets[i].keys = malloc(hashTable->buckets[i].initSize * sizeof(uint64_t));
@@ -190,7 +204,7 @@ void initHashTable(struct HashTable* hashTable) {
 }
 
 void insertHashTable(struct HashTable* hashTable, uint64_t key, uint64_t value) {
-    uint32_t index = key % 1009, bucketIndex = 0;
+    uint32_t index = HASH_FUNCTION(key), bucketIndex = 0;
     struct HashBucket* bucket = &hashTable->buckets[index];
     for (int i = 0; i < bucket->size; i++) {
         if (bucket->keys[bucketIndex] == key) {
@@ -212,7 +226,7 @@ void updateHashTableValues(struct HashTable* hashTablePrev, struct HashTable* ha
     uint8_t numDigitsVal;
     uint64_t value;
     uint64_t key;
-    for (int i = 0; i < hashTablePrev->size; i++) {
+    for (int i = 0; i < hashTable->size; i++) {
         for (int j = 0; j < hashTablePrev->buckets[i].size; j++) {
             value = hashTablePrev->buckets[i].values[j];
             if (value == 0) continue;
@@ -247,4 +261,5 @@ void freeHashTable(struct HashTable* hashTable) {
         free(hashTable->buckets[i].keys);
         free(hashTable->buckets[i].values);
     }
+    free(hashTable->buckets);
 }
