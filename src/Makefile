@@ -1,4 +1,4 @@
-all: day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13
+all: day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13 day14
 
 day01: day01.c
 	gcc day01.c -o day01
@@ -39,5 +39,8 @@ day12: day12.c
 day13: day13.c
 	gcc day13.c -o day13
 
+day14: day14.c
+	gcc day14.c -o day14
+
 clean:
-	rm -f day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13
+	rm -f day01 day02 day03 day04 day05 day06 day07 day08 day09 day10 day11 day12 day13 day14
